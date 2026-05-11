@@ -1,0 +1,62 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+    paths:
+      - "infra/**"
+      - ".github/workflows/terraform-plan.yml"
+      - ".github/workflows/terraform-apply.yml"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  terraform-plan:
+    name: Plan ${{ matrix.layer }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        layer:
+          - 1-bootstrap
+          - 2-network
+          - 3-platform
+          - 4-application
+          - 5-observability
+
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME }}
+      TF_PLAN_VARS_FILE: ${{ vars.TF_PLAN_VARS_FILE }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
+
+      - name: Configure AWS credentials
+        if: ${{ env.AWS_ROLE_TO_ASSUME != '' && env.AWS_REGION != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform format check
+        run: terraform fmt -check -recursive infra
+
+      - name: Terraform init
+        working-directory: infra/layers/${{ matrix.layer }}
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        working-directory: infra/layers/${{ matrix.layer }}
+        run: terraform validate
+
+      - name: Terraform plan
+        working-directory: infra/layers/${{ matrix.layer }}
+        run: terraform plan -input=false -var-file="${TF_PLAN_VARS_FILE:-terraform.tfvars.example}"

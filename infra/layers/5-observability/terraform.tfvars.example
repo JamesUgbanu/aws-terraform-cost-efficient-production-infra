@@ -1,0 +1,16 @@
+project_name           = "acme-platform"
+environment            = "prod"
+aws_region             = "eu-west-2"
+api_log_group_name     = "/ecs/acme-platform-prod-api"
+worker_log_group_name  = "/ecs/acme-platform-prod-worker"
+ecs_cluster_name       = "acme-platform-prod"
+ecs_service_name       = "acme-platform-prod-api"
+alb_arn_suffix         = "app/acme-platform-prod-alb/0123456789abcdef"
+db_instance_identifier = "acme-platform-prod-postgres"
+log_retention_days     = 7
+alarm_actions          = []
+enable_dashboard       = false
+
+tags = {
+  Owner = "platform"
+}

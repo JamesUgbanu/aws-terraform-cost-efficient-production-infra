@@ -1,0 +1,84 @@
+name: Terraform Apply
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "infra/**"
+      - ".github/workflows/terraform-apply.yml"
+  workflow_dispatch:
+    inputs:
+      layer:
+        description: "Terraform layer to apply"
+        required: true
+        default: "4-application"
+        type: choice
+        options:
+          - 1-bootstrap
+          - 2-network
+          - 3-platform
+          - 4-application
+          - 5-observability
+      environment:
+        description: "Environment label used for your selected tfvars file"
+        required: true
+        default: "prod"
+        type: choice
+        options:
+          - dev
+          - prod
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  terraform-apply:
+    name: Apply Terraform
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'prod' }}
+
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME }}
+      DEFAULT_LAYER: ${{ vars.TF_DEFAULT_LAYER }}
+      DEFAULT_VARS_FILE: ${{ vars.TF_APPLY_VARS_FILE }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Select layer
+        id: selection
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "layer=${{ github.event.inputs.layer }}" >> "$GITHUB_OUTPUT"
+            echo "vars_file=${{ github.event.inputs.environment }}.tfvars" >> "$GITHUB_OUTPUT"
+          else
+            echo "layer=${DEFAULT_LAYER:-4-application}" >> "$GITHUB_OUTPUT"
+            echo "vars_file=${DEFAULT_VARS_FILE:-terraform.tfvars}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Terraform init
+        working-directory: infra/layers/${{ steps.selection.outputs.layer }}
+        run: terraform init
+
+      - name: Terraform validate
+        working-directory: infra/layers/${{ steps.selection.outputs.layer }}
+        run: terraform validate
+
+      - name: Terraform apply
+        working-directory: infra/layers/${{ steps.selection.outputs.layer }}
+        run: terraform apply -auto-approve -input=false -var-file="${{ steps.selection.outputs.vars_file }}"

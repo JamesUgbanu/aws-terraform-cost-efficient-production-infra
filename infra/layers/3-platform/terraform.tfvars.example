@@ -1,0 +1,20 @@
+project_name          = "acme-platform"
+environment           = "prod"
+aws_region            = "eu-west-2"
+vpc_id                = "vpc-0123456789abcdef0"
+public_subnet_ids     = ["subnet-0123456789abcdef0", "subnet-0123456789abcdef1"]
+alb_security_group_id = "sg-0123456789abcdef0"
+
+api_repository_name      = "acme-api-prod"
+enable_worker_repository = true
+worker_repository_name   = "acme-worker-prod"
+ecr_max_image_count      = 30
+
+api_container_port     = 3000
+api_health_check_path  = "/health"
+certificate_arn        = ""
+enable_alb_deletion_protection = true
+
+tags = {
+  Owner = "platform"
+}

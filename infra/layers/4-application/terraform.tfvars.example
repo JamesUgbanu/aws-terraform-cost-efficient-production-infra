@@ -1,0 +1,74 @@
+project_name             = "acme-platform"
+environment              = "prod"
+aws_region               = "eu-west-2"
+github_oidc_provider_arn = "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
+github_repository_owner  = "your-github-org"
+github_repository_name   = "aws-terraform-cost-efficient-production-infra"
+github_branch            = "main"
+
+api_repository_arn    = "arn:aws:ecr:eu-west-2:123456789012:repository/acme-api-prod"
+worker_repository_arn = "arn:aws:ecr:eu-west-2:123456789012:repository/acme-worker-prod"
+alb_target_group_arn  = "arn:aws:elasticloadbalancing:eu-west-2:123456789012:targetgroup/acme-api-prod/0123456789abcdef"
+
+app_subnet_ids       = ["subnet-0123456789abcdef2", "subnet-0123456789abcdef3"]
+db_subnet_ids        = ["subnet-0123456789abcdef2", "subnet-0123456789abcdef3"]
+ecs_security_group_id = "sg-0123456789abcdef1"
+db_security_group_id  = "sg-0123456789abcdef2"
+assign_public_ip      = false
+
+api_image          = "123456789012.dkr.ecr.eu-west-2.amazonaws.com/acme-api-prod:latest"
+api_container_name = "api"
+api_container_port = 3000
+api_cpu            = 256
+api_memory         = 512
+api_desired_count  = 1
+
+api_health_check_command = ["CMD-SHELL", "wget -qO- http://localhost:3000/health || exit 1"]
+
+api_environment_variables = {
+  NODE_ENV = "production"
+  PORT     = "3000"
+}
+
+enable_api_autoscaling       = false
+api_autoscaling_min_capacity = 1
+api_autoscaling_max_capacity = 2
+api_autoscaling_cpu_target   = 65
+
+enable_worker_service = true
+worker_image          = "123456789012.dkr.ecr.eu-west-2.amazonaws.com/acme-worker-prod:latest"
+worker_container_name = "worker"
+worker_cpu            = 256
+worker_memory         = 512
+worker_desired_count  = 1
+
+worker_environment_variables = {
+  NODE_ENV = "production"
+}
+
+ssm_secret_arns = {
+  DATABASE_URL = "arn:aws:ssm:eu-west-2:123456789012:parameter/acme/prod/database-url"
+}
+
+secrets_manager_secret_arns = {
+  JWT_SECRET = "arn:aws:secretsmanager:eu-west-2:123456789012:secret:acme/prod/jwt-secret-xxxx"
+}
+
+enable_execute_command = true
+log_retention_days     = 7
+
+enable_rds_postgres         = true
+db_name                     = "app"
+db_username                 = "app_user"
+db_password                 = "replace-me-before-apply"
+db_instance_class           = "db.t4g.micro"
+db_allocated_storage        = 20
+db_max_allocated_storage    = 100
+db_backup_retention_period  = 7
+db_deletion_protection      = true
+db_multi_az                 = false
+db_skip_final_snapshot      = false
+
+tags = {
+  Owner = "platform"
+}

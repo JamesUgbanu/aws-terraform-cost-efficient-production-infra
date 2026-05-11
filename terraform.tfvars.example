@@ -1,0 +1,11 @@
+# This file is documentation-only.
+# Real Terraform variables live inside each layer under:
+# - infra/layers/1-bootstrap/
+# - infra/layers/2-network/
+# - infra/layers/3-platform/
+# - infra/layers/4-application/
+# - infra/layers/5-observability/
+#
+# For each layer:
+# 1. copy terraform.tfvars.example to terraform.tfvars, or
+# 2. create dev.tfvars and prod.tfvars for GitHub Actions environment selection

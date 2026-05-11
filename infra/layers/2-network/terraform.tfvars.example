@@ -1,0 +1,28 @@
+project_name = "acme-platform"
+environment  = "prod"
+aws_region   = "eu-west-2"
+vpc_cidr     = "10.20.0.0/16"
+
+availability_zones = [
+  "eu-west-2a",
+  "eu-west-2b"
+]
+
+public_subnet_cidrs = [
+  "10.20.1.0/24",
+  "10.20.2.0/24"
+]
+
+private_subnet_cidrs = [
+  "10.20.11.0/24",
+  "10.20.12.0/24"
+]
+
+enable_private_subnets = true
+enable_nat_gateway     = false
+single_nat_gateway     = true
+enable_vpc_endpoints   = false
+
+tags = {
+  Owner = "platform"
+}

@@ -1,0 +1,8 @@
+project_name                = "acme-platform"
+environment                 = "shared"
+aws_region                  = "eu-west-2"
+enable_github_actions_oidc  = true
+
+tags = {
+  Owner = "platform"
+}
