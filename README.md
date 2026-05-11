@@ -1,7 +1,6 @@
 # Cost-Efficient Production-Grade AWS Infrastructure Using Terraform
 
 [![Terraform Plan](https://github.com/JamesUgbanu/aws-terraform-cost-efficient-production-infra/actions/workflows/terraform-plan.yml/badge.svg)](https://github.com/JamesUgbanu/aws-terraform-cost-efficient-production-infra/actions/workflows/terraform-plan.yml)
-[![Terraform Apply](https://github.com/JamesUgbanu/aws-terraform-cost-efficient-production-infra/actions/workflows/terraform-apply.yml/badge.svg)](https://github.com/JamesUgbanu/aws-terraform-cost-efficient-production-infra/actions/workflows/terraform-apply.yml)
 
 Public starter infrastructure for startups and small SaaS teams that want a
 production-conscious AWS baseline without Kubernetes complexity or expensive
@@ -10,10 +9,6 @@ defaults.
 This repo is for teams building NestJS APIs, Next.js backends, SaaS platforms,
 fintech products, AI APIs, internal tools, and background workers that need to
 ship reliably while staying cost-aware.
-
-Suggested GitHub topics:
-`terraform`, `aws`, `ecs`, `fargate`, `rds`, `startup-infrastructure`,
-`cost-optimization`, `nestjs`, `saas`, `devops`, `github-actions`
 
 ## Why ECS Fargate Instead Of Kubernetes
 
