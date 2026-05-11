@@ -24,7 +24,7 @@ terraform apply
 ## GitHub Actions Deployment
 
 - `terraform-plan.yml` runs on pull requests
-- `terraform-apply.yml` runs on merge to `main` or manual dispatch
+- `terraform-apply.yml` runs only by manual dispatch
 - both workflows assume AWS roles via GitHub OIDC
 
 ## ECR Push Workflow

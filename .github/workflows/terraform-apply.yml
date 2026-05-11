@@ -1,12 +1,6 @@
 name: Terraform Apply
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "infra/**"
-      - ".github/workflows/terraform-apply.yml"
   workflow_dispatch:
     inputs:
       layer:
@@ -63,13 +57,8 @@ jobs:
       - name: Select layer
         id: selection
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "layer=${{ github.event.inputs.layer }}" >> "$GITHUB_OUTPUT"
-            echo "vars_file=${{ github.event.inputs.environment }}.tfvars" >> "$GITHUB_OUTPUT"
-          else
-            echo "layer=${DEFAULT_LAYER:-4-application}" >> "$GITHUB_OUTPUT"
-            echo "vars_file=${DEFAULT_VARS_FILE:-terraform.tfvars}" >> "$GITHUB_OUTPUT"
-          fi
+          echo "layer=${{ github.event.inputs.layer }}" >> "$GITHUB_OUTPUT"
+          echo "vars_file=${{ github.event.inputs.environment }}.tfvars" >> "$GITHUB_OUTPUT"
 
       - name: Terraform init
         working-directory: infra/layers/${{ steps.selection.outputs.layer }}

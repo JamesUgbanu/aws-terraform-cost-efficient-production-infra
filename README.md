@@ -235,7 +235,7 @@ Do not use this starter if you already know you need:
 ## GitHub Actions Workflow
 
 - pull requests run `terraform fmt`, `init`, `validate`, and `plan`
-- merges to `main` or manual dispatch can apply a selected layer
+- applies run only by manual dispatch
 - workflows rely on OIDC and documented repository variables
 
 ## Rollback Strategy
