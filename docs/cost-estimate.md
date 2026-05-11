@@ -6,12 +6,14 @@ and disciplined feature choices.
 
 ## Rough Monthly Baseline
 
-- ECS Fargate API service: `$15 to $30`
-- ECS Fargate worker service: `$15 to $25`
-- ALB: `$18 to $25`
-- RDS PostgreSQL `db.t4g.micro`: `$15 to $25`
-- CloudWatch logs and alarms: `$5 to $10`
-- ECR: usually low single digits
+| Service | Monthly estimate |
+| --- | --- |
+| ECS Fargate API service | `$10 to $25` |
+| ECS Fargate worker service | `$10 to $25` |
+| ALB | `$18 to $25` |
+| RDS PostgreSQL `db.t4g.micro` | `$15 to $30` |
+| CloudWatch logs and alarms | `$5 to $10` |
+| ECR, secrets, and storage | `$1 to $5` |
 
 ## Biggest Cost Traps
 
@@ -24,6 +26,7 @@ and disciplined feature choices.
 
 - keep NAT disabled unless private subnet egress is truly required
 - start with one API task and one worker task
+- prefer SQS for background jobs before adding Redis or ElastiCache
 - keep CPU and memory defaults small until profiling says otherwise
 - keep log retention at `7` or `14` days
 - use one ALB, not one per service

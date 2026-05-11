@@ -1,5 +1,8 @@
 # Cost-Efficient Production-Grade AWS Infrastructure Using Terraform
 
+[![Terraform Plan](https://github.com/JamesUgbanu/aws-terraform-cost-efficient-production-infra/actions/workflows/terraform-plan.yml/badge.svg)](https://github.com/JamesUgbanu/aws-terraform-cost-efficient-production-infra/actions/workflows/terraform-plan.yml)
+[![Terraform Apply](https://github.com/JamesUgbanu/aws-terraform-cost-efficient-production-infra/actions/workflows/terraform-apply.yml/badge.svg)](https://github.com/JamesUgbanu/aws-terraform-cost-efficient-production-infra/actions/workflows/terraform-apply.yml)
+
 Public starter infrastructure for startups and small SaaS teams that want a
 production-conscious AWS baseline without Kubernetes complexity or expensive
 defaults.
@@ -7,6 +10,10 @@ defaults.
 This repo is for teams building NestJS APIs, Next.js backends, SaaS platforms,
 fintech products, AI APIs, internal tools, and background workers that need to
 ship reliably while staying cost-aware.
+
+Suggested GitHub topics:
+`terraform`, `aws`, `ecs`, `fargate`, `rds`, `startup-infrastructure`,
+`cost-optimization`, `nestjs`, `saas`, `devops`, `github-actions`
 
 ## Why ECS Fargate Instead Of Kubernetes
 
@@ -90,6 +97,33 @@ jobs are pushed to SQS for worker processing.
 - least-privilege IAM baseline
 - optional private subnet path when you are ready for it
 
+## Deploy This
+
+If you want the smallest realistic path, start with the minimal example guide:
+
+```bash
+cd infra/examples/minimal
+cat README.md
+```
+
+Then apply the real Terraform layers in order:
+
+```bash
+cd ../../layers/1-bootstrap
+cp backend.tf.example backend.tf
+cp terraform.tfvars.example terraform.tfvars
+terraform init
+terraform plan
+terraform apply
+```
+
+Repeat that pattern for:
+
+- `infra/layers/2-network`
+- `infra/layers/3-platform`
+- `infra/layers/4-application`
+- `infra/layers/5-observability`
+
 ## Folder Structure
 
 ```text
@@ -125,6 +159,8 @@ See:
 2. Fill in your AWS account values, repository details, subnet IDs, and secret
    ARNs.
 3. Apply layers in order from `1-bootstrap` through `5-observability`.
+4. Start with a single API service and only add workers, private egress, or
+   extra caching when the workload proves it needs them.
 
 ## Deployment Steps
 
@@ -144,6 +180,15 @@ Repeat for the remaining layers after replacing example values with real ones.
 
 The intended starting envelope is roughly `$60 to $100/month` for a modest
 production workload, with observability kept near `$5 to $10/month`.
+
+| Service | Monthly estimate |
+| --- | --- |
+| ECS Fargate API | `$10 to $25` |
+| ECS Fargate worker | `$10 to $25` |
+| ALB | `$18 to $25` |
+| RDS PostgreSQL | `$15 to $30` |
+| CloudWatch | `$5 to $10` |
+| ECR, secrets, and storage | `$1 to $5` |
 
 Read [docs/cost-estimate.md](./docs/cost-estimate.md) before enabling:
 
@@ -166,8 +211,19 @@ More detail lives in [docs/security.md](./docs/security.md).
 
 - scale the API service first
 - split background workers by job type when contention appears
+- default to SQS for async processing before reaching for Redis
 - add Redis only when caching or queue patterns actually need it
 - move to Kubernetes only when ECS becomes a real bottleneck, not as a status symbol
+
+## When Not To Use This
+
+Do not use this starter if you already know you need:
+
+- multi-region active-active infrastructure
+- heavy compliance controls from day one
+- very high-throughput workloads with complex platform networking
+- a dedicated platform engineering team operating Kubernetes or service mesh
+- deep cloud portability with a lowest-common-denominator abstraction strategy
 
 ## Terraform Workflow
 
@@ -207,3 +263,8 @@ Avoid paying for complexity before the business needs it.
 - blue-green ECS deployment examples
 - SQS and EventBridge modules
 - private networking mode with VPC endpoints enabled
+
+## Roadmap
+
+See [ROADMAP.md](./ROADMAP.md) for the next set of practical improvements that
+would make this repo even more useful for public forks.

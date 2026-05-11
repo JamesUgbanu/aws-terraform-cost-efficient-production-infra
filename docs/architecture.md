@@ -23,7 +23,7 @@ Core building blocks:
 - ECS Fargate API service for synchronous traffic
 - ECS Fargate worker service for background work
 - Lambda for bursty or short-lived jobs
-- SQS for asynchronous decoupling
+- SQS for asynchronous decoupling and queue-driven workers
 - RDS PostgreSQL for transactional persistence
 - CloudWatch for logs and alarms
 - ECR for container images
@@ -89,7 +89,9 @@ Add Redis when:
 - you need low-latency caching
 - rate limiting or session storage becomes hot-path work
 
-Do not add it just because most diagrams have it.
+Do not add it just because most diagrams have it. For this starter, SQS is the
+default async primitive because it is cheaper, simpler, and easier to replace
+with equivalent services in GCP or Azure later.
 
 ## When To Separate Workers
 
